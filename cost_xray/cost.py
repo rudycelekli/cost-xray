@@ -13,7 +13,8 @@ _DEFAULT = {"input": 5.0, "output": 25.0}
 
 
 def _keys(model: str):
-    return (model, model.split("[", 1)[0], model.split("/", 1)[-1])
+    base = model.split("[", 1)[0]
+    return (model, base, model.split("/", 1)[-1], base.rsplit("/", 1)[-1])
 
 
 def _safe_rate(x):
