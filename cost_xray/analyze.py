@@ -20,7 +20,7 @@ try:
         hit = _NTOK_CACHE.get(k)
         if hit is not None:
             return hit
-        n = len(_ENC.encode(s))
+        n = len(_ENC.encode(s, disallowed_special=()))
         if len(_NTOK_CACHE) < _NTOK_CACHE_MAX:
             _NTOK_CACHE[k] = n
         return n
