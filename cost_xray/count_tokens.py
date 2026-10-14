@@ -356,7 +356,8 @@ _TOOL_STORE = pathlib.Path(os.path.expanduser("~/.cost-xray/tool_tokens.json"))
 
 def _tool_store_load():
     try:
-        return json.loads(_TOOL_STORE.read_text(encoding="utf-8"))
+        value = json.loads(_TOOL_STORE.read_text(encoding="utf-8"))
+        return value if isinstance(value, dict) else {}
     except Exception:
         return {}
 
@@ -381,7 +382,11 @@ def tools_exact(tools, model, key=None, oauth=None, _http=None, now=None):
     t = time.time() if now is None else now
     store = _tool_store_load()
     ent = store.get(ck)
-    if isinstance(ent, dict) and ent.get("vals") is not None and (t - ent.get("ts", 0)) < _TOOL_TTL:
+    vals = ent.get("vals") if isinstance(ent, dict) else None
+    ts = ent.get("ts") if isinstance(ent, dict) else None
+    if (isinstance(vals, list) and len(vals) == len(tools)
+            and all(type(v) in (int, float) and 0 <= v < float("inf") for v in vals)
+            and type(ts) in (int, float) and 0 <= t - ts < _TOOL_TTL):
         _TOOL_CACHE[ck] = ent["vals"]
         return ent["vals"]
     pe = per_event_tokens({"tools": tools, "messages": _STUB}, model, key, oauth, _http=_http)
