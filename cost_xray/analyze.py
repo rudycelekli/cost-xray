@@ -37,7 +37,9 @@ def window_for(model: str, betas: str = "") -> int:
     ov = os.environ.get("COST_XRAY_WINDOW")
     if ov:
         try:
-            return int(ov)
+            override = int(ov)
+            if override > 0:
+                return override
         except ValueError:
             pass
     m = (model or "").lower()
