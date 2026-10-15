@@ -222,6 +222,7 @@ def _stats(rows):
 
 
 def aggregate(turn_reports):
+    turn_reports = list(turn_reports)
     facet_rows = {}
     facet_key_rows = {}
     for rep in turn_reports:

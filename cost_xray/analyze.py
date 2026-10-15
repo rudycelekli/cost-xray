@@ -20,7 +20,7 @@ try:
         hit = _NTOK_CACHE.get(k)
         if hit is not None:
             return hit
-        n = len(_ENC.encode(s))
+        n = len(_ENC.encode(s, disallowed_special=()))
         if len(_NTOK_CACHE) < _NTOK_CACHE_MAX:
             _NTOK_CACHE[k] = n
         return n
@@ -37,7 +37,9 @@ def window_for(model: str, betas: str = "") -> int:
     ov = os.environ.get("COST_XRAY_WINDOW")
     if ov:
         try:
-            return int(ov)
+            override = int(ov)
+            if override > 0:
+                return override
         except ValueError:
             pass
     m = (model or "").lower()
