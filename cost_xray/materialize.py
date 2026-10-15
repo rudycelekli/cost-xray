@@ -138,6 +138,9 @@ def _load_state(d, agent):
         try:
             sm = json.loads(sp.read_text(encoding="utf-8"))
             n = sum(1 for ln in dp.read_text(encoding="utf-8").splitlines() if ln.strip())
+            offset = sm.get("raw_offset", 0)
+            if type(offset) is not int or not 0 <= offset <= (d / "raw.jsonl").stat().st_size:
+                return _empty_summary(agent, d.name), 0, 0
             if sm.get("agent") == agent and sm.get("n_turns") == n:
                 if sm.get("logic_version") == LOGIC_VERSION:
                     return sm, n, sm.get("raw_offset", 0)
